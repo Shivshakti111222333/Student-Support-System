@@ -1,0 +1,82 @@
+// main.js
+
+document.addEventListener('DOMContentLoaded', function () {
+    const loginSection = document.getElementById('login-section');
+    const registerSection = document.getElementById('register-section');
+    const issueSection = document.getElementById('issue-section');
+    const adminSection = document.getElementById('admin-section');
+
+    const showRegister = document.getElementById('show-register');
+    const showLogin = document.getElementById('show-login');
+
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    showRegister.addEventListener('click', function (e) {
+        e.preventDefault();
+        loginSection.classList.add('hidden');
+        registerSection.classList.remove('hidden');
+    });
+
+    showLogin.addEventListener('click', function (e) {
+        e.preventDefault();
+        registerSection.classList.add('hidden');
+        loginSection.classList.remove('hidden');
+    });
+
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        const role = document.getElementById('login-role').value;
+
+        // Replace with actual authentication logic
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password, role }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loginSection.classList.add('hidden');
+                if (role === 'student') {
+                    issueSection.classList.remove('hidden');
+                } else if (role === 'admin') {
+                    adminSection.classList.remove('hidden');
+                }
+            } else {
+                alert('Login failed');
+            }
+        });
+    });
+
+    registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('register-username').value;
+        const password = document.getElementById('register-password').value;
+        const role = document.getElementById('register-role').value;
+
+        // Replace with actual registration logic
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password, role }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Registration successful');
+                showLogin.click();
+            } else {
+                alert('Registration failed');
+            }
+        });
+    });
+
+    // Additional functions for handling issue reporting and admin dashboard here
+});
